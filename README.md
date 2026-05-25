@@ -27,6 +27,10 @@ Start with the Supabase deadline checklist if your immediate problem is a genera
 
 https://github.com/kayalopez/ai-agent-launch-tools/blob/main/checklists/supabase-data-api-grants-deadline-checklist.md
 
+For a redacted `supabase db pull` migration that generated `REVOKE` blocks and now replays `42501` failures after `supabase db reset`:
+
+https://ai-launch-risk-check-public.vercel.app/supabase-db-pull-revoke-replay.html
+
 For a redacted generated-app launch packet covering Lovable/v0/Bolt-style migrations, RLS evidence, RPC/function `EXECUTE`, Storage upload/upsert policies, wrong-tenant tests, and backend ownership:
 
 https://ai-launch-risk-check-public.vercel.app/supabase-generated-app-launch-check.html
