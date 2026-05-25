@@ -45,6 +45,10 @@ If that packet needs a 24-hour second pass, the fixed-scope Lovable Cloud migrat
 
 https://ai-launch-risk-check-public.vercel.app/lovable-cloud-migration-risk-report.html
 
+The fictional sample report shows the expected deliverable shape for a redacted Lovable Cloud to owned Supabase migration packet:
+
+https://ai-launch-risk-check-public.vercel.app/sample-lovable-cloud-migration-risk-report.md
+
 Start with the Supabase deadline checklist if your immediate problem is a generated migration, Lovable/v0-style Supabase app, or new project that returns `42501` after a table is created:
 
 https://github.com/kayalopez/ai-agent-launch-tools/blob/main/checklists/supabase-data-api-grants-deadline-checklist.md

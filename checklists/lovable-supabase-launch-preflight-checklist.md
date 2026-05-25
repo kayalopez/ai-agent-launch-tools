@@ -81,3 +81,7 @@ npx --package github:kayalopez/ai-agent-launch-tools#v0.1.29 supabase-grants-cut
 Use the fixed-scope Supabase Launch Risk Report only when one redacted packet needs a second pass within 24 hours:
 
 <https://ai-launch-risk-check-public.vercel.app/supabase-launch-risk-report.html>
+
+For the Lovable Cloud to owned Supabase migration shape, read the fictional sample report before checkout:
+
+<https://ai-launch-risk-check-public.vercel.app/sample-lovable-cloud-migration-risk-report.md>
