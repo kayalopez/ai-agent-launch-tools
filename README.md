@@ -73,6 +73,10 @@ For a redacted `supabase db pull` migration that generated `REVOKE` blocks and n
 
 https://ai-launch-risk-check-public.vercel.app/supabase-db-pull-revoke-replay.html
 
+For a PostgREST `PGRST204` schema-cache error after adding a column, table, or function, build a redacted packet that separates stale cache from wrong-project, migration replay, grants, and RLS evidence:
+
+https://ai-launch-risk-check-public.vercel.app/supabase-postgrest-schema-cache-pgrst204.html
+
 For a redacted generated-app launch packet covering Lovable/v0/Bolt-style migrations, RLS evidence, RPC/function `EXECUTE`, Storage upload/upsert policies, wrong-tenant tests, and backend ownership:
 
 https://ai-launch-risk-check-public.vercel.app/supabase-generated-app-launch-check.html
