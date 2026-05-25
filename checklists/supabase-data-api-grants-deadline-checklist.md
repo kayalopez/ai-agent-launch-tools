@@ -21,6 +21,7 @@ Create one redacted text packet with:
 - The `CREATE TABLE`, `ALTER TABLE`, `GRANT`, `REVOKE`, and `CREATE POLICY` statements for the affected tables.
 - Any `ALTER DEFAULT PRIVILEGES` statements for tables, functions, and sequences in `public`.
 - Any `42501` PostgREST error hint, with project refs, emails, tokens, and IDs removed.
+- Any `supabase db reset` or local replay note showing whether historical migrations include the new explicit grants.
 - The app path that should reach each object: no session, `anon`, authenticated user, service-side code, or admin-only path.
 - One expected-pass and one expected-deny smoke test per role.
 - Function/RPC `EXECUTE` grants, especially for functions created by AI tools or migration generators.
@@ -31,22 +32,23 @@ Create one redacted text packet with:
 2. For each table, write the minimum role-specific grants next to the table migration.
 3. Enable RLS and keep the policy next to the grant in the same migration review.
 4. Reject broad restore commands unless there is a reviewed reason for every table and role.
-5. Check sequences separately if inserts depend on generated IDs.
-6. Check functions separately because table RLS does not control function execution.
-7. Run one no-session request, one `anon` request, and one authenticated request against the new table path.
-8. If the app is multi-tenant, add a wrong-tenant read/update/delete test for the same table.
-9. If an Edge Function uses service role, map the endpoint to its caller authorization check.
-10. Save the final role matrix as launch evidence before the migration ships.
+5. Run `supabase db reset` against a disposable local project to confirm historical migrations replay the grants.
+6. Check sequences separately if inserts depend on generated IDs.
+7. Check functions separately because table RLS does not control function execution.
+8. Run one no-session request, one `anon` request, and one authenticated request against the new table path.
+9. If the app is multi-tenant, add a wrong-tenant read/update/delete test for the same table.
+10. If an Edge Function uses service role, map the endpoint to its caller authorization check.
+11. Save the final role matrix as launch evidence before the migration ships.
 
 ## CLI Gate
 
 Run the dependency-free local checker on a redacted packet:
 
 ```bash
-npx --package github:kayalopez/ai-agent-launch-tools#v0.1.25 supabase-grants-cutover --file supabase_grants.redacted.sql --fail-on high
+npx --package github:kayalopez/ai-agent-launch-tools#v0.1.27 supabase-grants-cutover --file supabase_grants.redacted.sql --fail-on high
 ```
 
-The CLI does not connect to Supabase. It only reads local redacted text and flags missing grants, broad grants, default-privilege state, function `EXECUTE` evidence, disabled RLS, permissive policies, anonymous-session boundaries, and `42501` grant hints.
+The CLI does not connect to Supabase. It only reads local redacted text and flags missing grants, local `db reset` replay gaps, broad grants, default-privilege state, function `EXECUTE` evidence, disabled RLS, permissive policies, anonymous-session boundaries, and `42501` grant hints.
 
 ## Browser Tools
 

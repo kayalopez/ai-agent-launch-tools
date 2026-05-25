@@ -183,6 +183,7 @@ function reviewGrants(raw) {
   const hasExecuteEvidence = /\b(?:grant|revoke)\s+execute\b|\bproacl\b|=X|\/rpc\//i.test(raw);
   const broadTableGrant = /grant\s+all[\s\S]{0,220}\bto\s+(?:anon|authenticated|public)\b|grant\s+(?:select|insert|update|delete)[\s,]+(?:select|insert|update|delete)[\s\S]{0,220}\bto\s+anon\b/i.test(sql);
   const broadExecuteGrant = /grant\s+execute[\s\S]{0,220}\bto\s+(?:anon|authenticated|public)\b/i.test(sql);
+  const localResetReplay = /\b(?:supabase\s+db\s+reset|db\s+reset|local\s+dev|historical\s+migrations?|migration\s+replay|replay(?:ing)?\s+migrations?|config\.toml)\b/i.test(raw);
   const defaultTablesRevoked = /alter\s+default\s+privileges[\s\S]{0,320}revoke[\s\S]{0,160}(?:select|insert|update|delete)[\s\S]{0,160}on\s+tables/i.test(sql);
   const defaultFunctionsRevoked = /alter\s+default\s+privileges[\s\S]{0,320}revoke[\s\S]{0,120}execute[\s\S]{0,160}on\s+functions/i.test(sql);
   const defaultSequencesRevoked = /alter\s+default\s+privileges[\s\S]{0,320}revoke[\s\S]{0,160}(?:usage|select)[\s\S]{0,160}on\s+sequences/i.test(sql);
@@ -218,6 +219,10 @@ function reviewGrants(raw) {
     add(findings, "medium", "default_table_privileges_state_missing", "Default table privilege state is unrecorded", "Record whether the project has opted into revoked default table privileges before the May 30 and October 30 rollout dates.");
   } else if (defaultTablesRevoked) {
     add(findings, "low", "default_table_privileges_revoked", "Default table privilege revoke evidence is present", "Keep explicit grants for intended Data API tables in the same migration or packet.");
+  }
+
+  if (localResetReplay && hasPublicTable && !hasTableGrant) {
+    add(findings, "medium", "db_reset_replay_grants_missing", "Local db reset replay can rebuild tables without Data API grants", "If historical migrations create public-schema tables, a fresh supabase db reset should replay explicit grants in migrations instead of depending on dashboard defaults or manual fixes.");
   }
 
   if (defaultSequencesRevoked) {
@@ -302,6 +307,7 @@ function buildReport({ label, raw, failOn }) {
     grantReviewPacket: buildGrantReviewPacket(grantHints),
     nextChecks: [
       "Record whether default table, function, and sequence privileges are revoked for future public-schema objects.",
+      "Run supabase db reset in a disposable local project and confirm replayed historical migrations include explicit Data API grants.",
       "For every browser-facing table, record the exact anon/authenticated/service_role grants needed.",
       "For every callable RPC, record function-specific EXECUTE revoke/grant evidence.",
       "Run one Data API smoke test as anon, one as authenticated, and one with no session.",

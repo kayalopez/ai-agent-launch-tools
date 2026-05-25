@@ -19,7 +19,7 @@ The repo also includes practical MCP/tool-call launch checklists:
 
 It now includes a small config reviewer and `tools/list` importer. The config reviewer turns a redacted Claude Desktop-style MCP config into a pre-install BLOCK / CAUTION / REVIEW report. The importer turns MCP tool metadata into an allow / ask / deny permission matrix with a snapshot digest for re-reviewing changed tools, without invoking any tools. It also recursively scans tool names, descriptions, and every string inside `inputSchema` for metadata/schema injection signals, including nested parameter descriptions, enum values, defaults, and titles. It flags schema-quality drift such as missing or empty `inputSchema`, object schemas without properties, missing `required` arrays, undocumented parameters, boolean/null/array property-schema entries, union `type` arrays that need target-client regression coverage, and JSON Schema `$ref` entries that some MCP clients or LLM tool adapters may not dereference before argument generation. It now also flags missing or incomplete `outputSchema` metadata for tools that appear to return structured data, so teams can review whether `structuredContent` can be validated and rendered reliably. It also flags missing or incomplete MCP `annotations` hints that clients can use for read-only, destructive, idempotent, and open-world approval prompts. It can also print a Codex `config.toml` review snippet that keeps sandbox settings separate from MCP tool approval.
 
-The repo also includes Supabase launch CLIs for redacted SQL/RPC/view/Security Advisor notes. `supabase-rpc-audit` checks local text only and flags public-schema definer functions, public views missing `security_invoker`, broad `EXECUTE` or `SELECT` grants, default-`EXECUTE` revoke mismatches, callable-RPC ACL or REST smoke-test evidence, missing `search_path` hardening, `Function Search Path Mutable` review packets, SQL-function inlining tradeoffs, `SET search_path FROM CURRENT` evidence needs, and privileged functions or views that can bypass caller RLS expectations. `supabase-grants-cutover` reviews redacted Data API grants and policy packets for the 2026 explicit-grants default, including missing table grants, default privilege state, broad grant quick fixes, function `EXECUTE` evidence, disabled RLS, permissive policies, anonymous sign-in boundaries, and `auth.uid()` null behavior. It also extracts redacted PostgREST `42501` grant hints into reviewable `GRANT ...` statements plus role-matrix smoke tests, so teams can fix missing reachability without turning it into a broad RLS or policy change. `supabase-anonymous-rls-audit` reviews redacted policies for the anonymous sign-in footgun where temporary users still use the `authenticated` role, with special attention to invitation, team, membership, billing, owner, profile, and nullable-email policy checks. `supabase-tenant-boundary-audit` reviews a redacted multi-tenant launch packet for missing tenant boundaries, wrong-tenant negative-test gaps, service-role path mapping, SECURITY DEFINER caller-context tests, Storage upload/upsert policy evidence, broad grants, and billing or owner state transitions. Use `--fail-on high` in CI to block generated migrations that drop launch-blocking grants, views, anonymous-session boundaries, tenant checks, or RPC safety markers.
+The repo also includes Supabase launch CLIs for redacted SQL/RPC/view/Security Advisor notes. `supabase-rpc-audit` checks local text only and flags public-schema definer functions, public views missing `security_invoker`, broad `EXECUTE` or `SELECT` grants, default-`EXECUTE` revoke mismatches, callable-RPC ACL or REST smoke-test evidence, missing `search_path` hardening, `Function Search Path Mutable` review packets, SQL-function inlining tradeoffs, `SET search_path FROM CURRENT` evidence needs, and privileged functions or views that can bypass caller RLS expectations. `supabase-grants-cutover` reviews redacted Data API grants and policy packets for the 2026 explicit-grants default, including missing table grants, local `supabase db reset` / historical migration replay gaps, default privilege state, broad grant quick fixes, function `EXECUTE` evidence, disabled RLS, permissive policies, anonymous sign-in boundaries, and `auth.uid()` null behavior. It also extracts redacted PostgREST `42501` grant hints into reviewable `GRANT ...` statements plus role-matrix smoke tests, so teams can fix missing reachability without turning it into a broad RLS or policy change. `supabase-anonymous-rls-audit` reviews redacted policies for the anonymous sign-in footgun where temporary users still use the `authenticated` role, with special attention to invitation, team, membership, billing, owner, profile, and nullable-email policy checks. `supabase-tenant-boundary-audit` reviews a redacted multi-tenant launch packet for missing tenant boundaries, wrong-tenant negative-test gaps, service-role path mapping, SECURITY DEFINER caller-context tests, Storage upload/upsert policy evidence, broad grants, and billing or owner state transitions. Use `--fail-on high` in CI to block generated migrations that drop launch-blocking grants, views, anonymous-session boundaries, tenant checks, or RPC safety markers.
 
 The public browser tools also include Supabase launch checks for teams pairing AI agents with Supabase. Use them to review redacted Lovable/v0/Bolt-style generated app packets, Data API grants, explicit grant migration skeletons, multi-tenant RLS boundary packets, anonymous sign-in RLS boundaries, Security Definer RPCs, default `EXECUTE` exposure packets, `security_invoker` view drift, exposed views, Security Advisor `search_path` warnings, auth signup trigger failures, and project-scoped Supabase MCP branching before an agent applies migrations or touches production data. The grants checker now covers the May 30, 2026 new-project Data API default and the October 30, 2026 rollout for existing projects, including default-privilege state and function `EXECUTE` evidence.
 
@@ -88,25 +88,25 @@ npx --package github:kayalopez/ai-agent-launch-tools#v0.1.15 mcp-trust-check --s
 Review redacted Supabase SQL/RPC/view notes for Security Definer and security-invoker risk:
 
 ```bash
-npx --package github:kayalopez/ai-agent-launch-tools#v0.1.26 supabase-rpc-audit --file supabase_rpc.redacted.sql
+npx --package github:kayalopez/ai-agent-launch-tools#v0.1.27 supabase-rpc-audit --file supabase_rpc.redacted.sql
 ```
 
 Review redacted Supabase Data API grants and RLS policy notes for the 2026 explicit-grants cutover:
 
 ```bash
-npx --package github:kayalopez/ai-agent-launch-tools#v0.1.26 supabase-grants-cutover --file supabase_grants.redacted.sql --fail-on high
+npx --package github:kayalopez/ai-agent-launch-tools#v0.1.27 supabase-grants-cutover --file supabase_grants.redacted.sql --fail-on high
 ```
 
 Review redacted Supabase anonymous sign-in RLS policies for authenticated-role drift:
 
 ```bash
-npx --package github:kayalopez/ai-agent-launch-tools#v0.1.26 supabase-anonymous-rls-audit --file supabase_anonymous_rls.redacted.sql --fail-on high
+npx --package github:kayalopez/ai-agent-launch-tools#v0.1.27 supabase-anonymous-rls-audit --file supabase_anonymous_rls.redacted.sql --fail-on high
 ```
 
 Review a redacted Supabase multi-tenant RLS boundary packet:
 
 ```bash
-npx --package github:kayalopez/ai-agent-launch-tools#v0.1.26 supabase-tenant-boundary-audit --file supabase_tenant_boundary.redacted.sql --fail-on high
+npx --package github:kayalopez/ai-agent-launch-tools#v0.1.27 supabase-tenant-boundary-audit --file supabase_tenant_boundary.redacted.sql --fail-on high
 ```
 
 When either Supabase CLI returns `BLOCK` or `CAUTION`, use the generated digest and redacted packet as the intake boundary. Do not send live credentials, connection strings, service-role strings, OAuth material, customer records, payment records, private screenshots, full names, private handles, or full transaction identifiers.
@@ -114,7 +114,7 @@ When either Supabase CLI returns `BLOCK` or `CAUTION`, use the generated digest 
 Fail CI on high-severity migration drift:
 
 ```bash
-npx --package github:kayalopez/ai-agent-launch-tools#v0.1.26 supabase-rpc-audit --file supabase_migration.redacted.sql --fail-on high
+npx --package github:kayalopez/ai-agent-launch-tools#v0.1.27 supabase-rpc-audit --file supabase_migration.redacted.sql --fail-on high
 ```
 
 Try the included Supabase RPC example after cloning:
@@ -132,7 +132,7 @@ node scripts/supabase-rpc-audit.mjs --file examples/supabase-security-invoker-vi
 JSON output:
 
 ```bash
-npx --package github:kayalopez/ai-agent-launch-tools#v0.1.26 supabase-rpc-audit --file supabase_rpc.redacted.sql --json
+npx --package github:kayalopez/ai-agent-launch-tools#v0.1.27 supabase-rpc-audit --file supabase_rpc.redacted.sql --json
 ```
 
 Review a redacted Supabase Security Advisor `Function Search Path Mutable` tradeoff packet:
@@ -168,7 +168,7 @@ node scripts/supabase-grants-cutover.mjs --file examples/supabase-42501-grant-hi
 JSON output:
 
 ```bash
-npx --package github:kayalopez/ai-agent-launch-tools#v0.1.26 supabase-grants-cutover --file supabase_grants.redacted.sql --json
+npx --package github:kayalopez/ai-agent-launch-tools#v0.1.27 supabase-grants-cutover --file supabase_grants.redacted.sql --json
 ```
 
 Try the included anonymous sign-in RLS example after cloning:
