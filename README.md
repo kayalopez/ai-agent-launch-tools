@@ -29,7 +29,7 @@ Start with the Lovable Supabase launch preflight checklist if your immediate pro
 
 https://github.com/kayalopez/ai-agent-launch-tools/blob/main/checklists/lovable-supabase-launch-preflight-checklist.md
 
-Use the browser preflight to turn redacted migration or launch notes into a packet:
+Use the browser preflight to turn redacted migration or launch notes into a packet and `migration.md` cutover plan. The generated plan marks `BLOCK`, `CAUTION`, or `REVIEW`, then walks through explicit grants, clean `supabase db reset` replay, role-matrix tests, Storage upsert tests, frontend target switching, fallback, and service-role exposure follow-up:
 
 https://ai-launch-risk-check-public.vercel.app/lovable-supabase-launch-preflight.html
 

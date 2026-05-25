@@ -57,11 +57,13 @@ Storage object policies are separate from table RLS. An app can have reasonable 
 - Confirm explicit `EXECUTE` or `SELECT` grants where needed.
 - Review `SECURITY DEFINER`, search path, and caller-context assumptions before using an RPC to bypass a permission error.
 
-## 7. Redacted next step
+## 7. Redacted migration plan
 
 Use the no-login preflight page to turn the notes above into a packet:
 
 <https://ai-launch-risk-check-public.vercel.app/lovable-supabase-launch-preflight.html>
+
+The generated packet includes a `migration.md` cutover plan with `BLOCK`, `CAUTION`, or `REVIEW` status. Use it to verify write-freeze timing, backend ownership, clean Supabase rebuild, explicit Data API grants, `supabase db reset` replay, role-matrix tests, Storage upsert behavior, frontend target switching, fallback, and service-role exposure follow-up.
 
 Then run the generated-app checker or grants checker:
 
