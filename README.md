@@ -29,6 +29,10 @@ If your immediate problem is moving from Supabase Cloud to a self-hosted Docker 
 
 https://ai-launch-risk-check-public.vercel.app/supabase-self-hosted-migration-trap-check.html
 
+The fictional sample report shows the expected 24-hour second-pass shape for a redacted Supabase Cloud to self-hosted migration packet:
+
+https://ai-launch-risk-check-public.vercel.app/sample-supabase-self-hosted-migration-report.md
+
 Start with the Lovable Supabase launch preflight checklist if your immediate problem is a Lovable Cloud migration or generated app where auth transfer, RLS, Storage upserts, backend ownership, frontend target switching, or generated migrations are unclear before launch:
 
 https://github.com/kayalopez/ai-agent-launch-tools/blob/main/checklists/lovable-supabase-launch-preflight-checklist.md
@@ -357,6 +361,7 @@ These no-login tools are live:
 - Supabase Launch Risk Report: https://ai-launch-risk-check-public.vercel.app/supabase-launch-risk-report.html
 - Supabase API grants readiness checker: https://ai-launch-risk-check-public.vercel.app/supabase-api-grants-readiness.html
 - Supabase self-hosted migration trap check: https://ai-launch-risk-check-public.vercel.app/supabase-self-hosted-migration-trap-check.html
+- Sample Supabase self-hosted migration report: https://ai-launch-risk-check-public.vercel.app/sample-supabase-self-hosted-migration-report.md
 - Lovable Supabase launch preflight: https://ai-launch-risk-check-public.vercel.app/lovable-supabase-launch-preflight.html
 - Lovable Cloud to Supabase migration checklist: https://ai-launch-risk-check-public.vercel.app/lovable-cloud-to-supabase-migration-checklist.html
 - Generated Supabase app launch check: https://ai-launch-risk-check-public.vercel.app/supabase-generated-app-launch-check.html
