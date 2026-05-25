@@ -18,7 +18,7 @@ The repo also includes practical MCP/tool-call launch checklists:
 
 It now includes a small config reviewer and `tools/list` importer. The config reviewer turns a redacted Claude Desktop-style MCP config into a pre-install BLOCK / CAUTION / REVIEW report. The importer turns MCP tool metadata into an allow / ask / deny permission matrix with a snapshot digest for re-reviewing changed tools, without invoking any tools. It also recursively scans tool names, descriptions, and every string inside `inputSchema` for metadata/schema injection signals, including nested parameter descriptions, enum values, defaults, and titles. It flags schema-quality drift such as missing or empty `inputSchema`, object schemas without properties, missing `required` arrays, undocumented parameters, boolean/null/array property-schema entries, union `type` arrays that need target-client regression coverage, and JSON Schema `$ref` entries that some MCP clients or LLM tool adapters may not dereference before argument generation. It now also flags missing or incomplete `outputSchema` metadata for tools that appear to return structured data, so teams can review whether `structuredContent` can be validated and rendered reliably. It also flags missing or incomplete MCP `annotations` hints that clients can use for read-only, destructive, idempotent, and open-world approval prompts. It can also print a Codex `config.toml` review snippet that keeps sandbox settings separate from MCP tool approval.
 
-The repo also includes a Supabase RPC/view RLS audit CLI for redacted SQL/RPC/view/Security Advisor notes. It checks local text only and flags public-schema definer functions, public views missing `security_invoker`, broad `EXECUTE` or `SELECT` grants, default-`EXECUTE` revoke mismatches, callable-RPC ACL or REST smoke-test evidence, missing `search_path` hardening, `Function Search Path Mutable` review packets, SQL-function inlining tradeoffs, `SET search_path FROM CURRENT` evidence needs, and privileged functions or views that can bypass caller RLS expectations. Use `--fail-on high` in CI to block generated migrations that drop a launch-blocking view or RPC safety marker.
+The repo also includes Supabase launch CLIs for redacted SQL/RPC/view/Security Advisor notes. `supabase-rpc-audit` checks local text only and flags public-schema definer functions, public views missing `security_invoker`, broad `EXECUTE` or `SELECT` grants, default-`EXECUTE` revoke mismatches, callable-RPC ACL or REST smoke-test evidence, missing `search_path` hardening, `Function Search Path Mutable` review packets, SQL-function inlining tradeoffs, `SET search_path FROM CURRENT` evidence needs, and privileged functions or views that can bypass caller RLS expectations. `supabase-grants-cutover` reviews redacted Data API grants and policy packets for the 2026 explicit-grants default, including missing table grants, default privilege state, broad grant quick fixes, function `EXECUTE` evidence, disabled RLS, permissive policies, anonymous sign-in boundaries, and `auth.uid()` null behavior. Use `--fail-on high` in CI to block generated migrations that drop launch-blocking grants, views, or RPC safety markers.
 
 The public browser tools also include Supabase launch checks for teams pairing AI agents with Supabase. Use them to review redacted Data API grants, anonymous sign-in RLS boundaries, Security Definer RPCs, default `EXECUTE` exposure packets, `security_invoker` view drift, exposed views, Security Advisor `search_path` warnings, auth signup trigger failures, and project-scoped Supabase MCP branching before an agent applies migrations or touches production data. The grants checker now covers the May 30, 2026 new-project Data API default and the October 30, 2026 rollout for existing projects, including default-privilege state and function `EXECUTE` evidence.
 
@@ -71,13 +71,19 @@ npx --package github:kayalopez/ai-agent-launch-tools#v0.1.15 mcp-trust-check --s
 Review redacted Supabase SQL/RPC/view notes for Security Definer and security-invoker risk:
 
 ```bash
-npx --package github:kayalopez/ai-agent-launch-tools#v0.1.21 supabase-rpc-audit --file supabase_rpc.redacted.sql
+npx --package github:kayalopez/ai-agent-launch-tools#v0.1.22 supabase-rpc-audit --file supabase_rpc.redacted.sql
+```
+
+Review redacted Supabase Data API grants and RLS policy notes for the 2026 explicit-grants cutover:
+
+```bash
+npx --package github:kayalopez/ai-agent-launch-tools#v0.1.22 supabase-grants-cutover --file supabase_grants.redacted.sql --fail-on high
 ```
 
 Fail CI on high-severity migration drift:
 
 ```bash
-npx --package github:kayalopez/ai-agent-launch-tools#v0.1.21 supabase-rpc-audit --file supabase_migration.redacted.sql --fail-on high
+npx --package github:kayalopez/ai-agent-launch-tools#v0.1.22 supabase-rpc-audit --file supabase_migration.redacted.sql --fail-on high
 ```
 
 Try the included Supabase RPC example after cloning:
@@ -95,7 +101,7 @@ node scripts/supabase-rpc-audit.mjs --file examples/supabase-security-invoker-vi
 JSON output:
 
 ```bash
-npx --package github:kayalopez/ai-agent-launch-tools#v0.1.21 supabase-rpc-audit --file supabase_rpc.redacted.sql --json
+npx --package github:kayalopez/ai-agent-launch-tools#v0.1.22 supabase-rpc-audit --file supabase_rpc.redacted.sql --json
 ```
 
 Review a redacted Supabase Security Advisor `Function Search Path Mutable` tradeoff packet:
@@ -114,6 +120,18 @@ Review a redacted default `EXECUTE` exposure packet:
 
 ```bash
 node scripts/supabase-rpc-audit.mjs --file examples/supabase-default-execute-exposure.sql
+```
+
+Review the included redacted Data API grants cutover packet:
+
+```bash
+node scripts/supabase-grants-cutover.mjs --file examples/supabase-grants-cutover.sql
+```
+
+JSON output:
+
+```bash
+npx --package github:kayalopez/ai-agent-launch-tools#v0.1.22 supabase-grants-cutover --file supabase_grants.redacted.sql --json
 ```
 
 Review a redacted MCP client config before installing or approving servers:
@@ -226,7 +244,7 @@ npx --package github:kayalopez/ai-agent-launch-tools#v0.1.15 public-surface-scan
 
 The scanner blocks localhost, private, reserved, and non-standard-port targets. It is for public launch hygiene only, not penetration testing, vulnerability scanning, legal advice, compliance certification, or a security guarantee.
 
-The MCP trust planner blocks obvious secret-like inputs and prints a non-sensitive launch checklist. The MCP config reviewer refuses likely unredacted secret env values, prints env key names but not values, and never starts servers, calls tools, fetches URLs, or validates safety. The MCP permission matrix importer reads metadata only, never invokes MCP tools, recursively scans nested schema strings for prompt-injection and tool-selection-bias signals, flags schema-quality drift that can make clients lose argument metadata, and now highlights `$ref`-based schemas, non-object property schemas, union `type` arrays, missing/incomplete `outputSchema` metadata for structured results, and missing/incomplete MCP `annotations` hints that may need target-client regression coverage before launch. It can compare a new metadata snapshot against a prior JSON matrix so added, removed, or changed tools re-enter review. The Codex snippet maps `allow` to `approval_mode = "approve"`, `ask` maps to `approval_mode = "prompt"`, and `deny` maps to `disabled_tools`; it does not disable sandboxing. These tools are for review planning only, not approval automation or a guarantee that a server is safe.
+The MCP trust planner blocks obvious secret-like inputs and prints a non-sensitive launch checklist. The MCP config reviewer refuses likely unredacted secret env values, prints env key names but not values, and never starts servers, calls tools, fetches URLs, or validates safety. The MCP permission matrix importer reads metadata only, never invokes MCP tools, recursively scans nested schema strings for prompt-injection and tool-selection-bias signals, flags schema-quality drift that can make clients lose argument metadata, and now highlights `$ref`-based schemas, non-object property schemas, union `type` arrays, missing/incomplete `outputSchema` metadata for structured results, and missing/incomplete MCP `annotations` hints that may need target-client regression coverage before launch. It can compare a new metadata snapshot against a prior JSON matrix so added, removed, or changed tools re-enter review. The Codex snippet maps `allow` to `approval_mode = "approve"`, `ask` maps to `approval_mode = "prompt"`, and `deny` maps to `disabled_tools`; it does not disable sandboxing. The Supabase CLIs read local redacted text only; they do not connect to Supabase, fetch URLs, call RPCs, inspect private data, or prove safety. These tools are for review planning only, not approval automation, penetration testing, compliance certification, or a guarantee that a server or database is safe.
 
 ## Free Browser Tools
 
