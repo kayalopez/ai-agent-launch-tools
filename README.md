@@ -32,6 +32,10 @@ Use the browser preflight to turn redacted migration or launch notes into a pack
 
 https://ai-launch-risk-check-public.vercel.app/lovable-supabase-launch-preflight.html
 
+If that packet needs a 24-hour second pass, the fixed-scope Lovable Cloud migration report page explains the one-packet `$25` scope before checkout:
+
+https://ai-launch-risk-check-public.vercel.app/lovable-cloud-migration-risk-report.html
+
 Start with the Supabase deadline checklist if your immediate problem is a generated migration, Lovable/v0-style Supabase app, or new project that returns `42501` after a table is created:
 
 https://github.com/kayalopez/ai-agent-launch-tools/blob/main/checklists/supabase-data-api-grants-deadline-checklist.md
