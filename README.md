@@ -84,25 +84,25 @@ npx --package github:kayalopez/ai-agent-launch-tools#v0.1.15 mcp-trust-check --s
 Review redacted Supabase SQL/RPC/view notes for Security Definer and security-invoker risk:
 
 ```bash
-npx --package github:kayalopez/ai-agent-launch-tools#v0.1.25 supabase-rpc-audit --file supabase_rpc.redacted.sql
+npx --package github:kayalopez/ai-agent-launch-tools#v0.1.26 supabase-rpc-audit --file supabase_rpc.redacted.sql
 ```
 
 Review redacted Supabase Data API grants and RLS policy notes for the 2026 explicit-grants cutover:
 
 ```bash
-npx --package github:kayalopez/ai-agent-launch-tools#v0.1.25 supabase-grants-cutover --file supabase_grants.redacted.sql --fail-on high
+npx --package github:kayalopez/ai-agent-launch-tools#v0.1.26 supabase-grants-cutover --file supabase_grants.redacted.sql --fail-on high
 ```
 
 Review redacted Supabase anonymous sign-in RLS policies for authenticated-role drift:
 
 ```bash
-npx --package github:kayalopez/ai-agent-launch-tools#v0.1.25 supabase-anonymous-rls-audit --file supabase_anonymous_rls.redacted.sql --fail-on high
+npx --package github:kayalopez/ai-agent-launch-tools#v0.1.26 supabase-anonymous-rls-audit --file supabase_anonymous_rls.redacted.sql --fail-on high
 ```
 
 Review a redacted Supabase multi-tenant RLS boundary packet:
 
 ```bash
-npx --package github:kayalopez/ai-agent-launch-tools#v0.1.25 supabase-tenant-boundary-audit --file supabase_tenant_boundary.redacted.sql --fail-on high
+npx --package github:kayalopez/ai-agent-launch-tools#v0.1.26 supabase-tenant-boundary-audit --file supabase_tenant_boundary.redacted.sql --fail-on high
 ```
 
 When either Supabase CLI returns `BLOCK` or `CAUTION`, use the generated digest and redacted packet as the intake boundary. Do not send live credentials, connection strings, service-role strings, OAuth material, customer records, payment records, private screenshots, full names, private handles, or full transaction identifiers.
@@ -110,7 +110,7 @@ When either Supabase CLI returns `BLOCK` or `CAUTION`, use the generated digest 
 Fail CI on high-severity migration drift:
 
 ```bash
-npx --package github:kayalopez/ai-agent-launch-tools#v0.1.25 supabase-rpc-audit --file supabase_migration.redacted.sql --fail-on high
+npx --package github:kayalopez/ai-agent-launch-tools#v0.1.26 supabase-rpc-audit --file supabase_migration.redacted.sql --fail-on high
 ```
 
 Try the included Supabase RPC example after cloning:
@@ -128,7 +128,7 @@ node scripts/supabase-rpc-audit.mjs --file examples/supabase-security-invoker-vi
 JSON output:
 
 ```bash
-npx --package github:kayalopez/ai-agent-launch-tools#v0.1.25 supabase-rpc-audit --file supabase_rpc.redacted.sql --json
+npx --package github:kayalopez/ai-agent-launch-tools#v0.1.26 supabase-rpc-audit --file supabase_rpc.redacted.sql --json
 ```
 
 Review a redacted Supabase Security Advisor `Function Search Path Mutable` tradeoff packet:
@@ -164,7 +164,7 @@ node scripts/supabase-grants-cutover.mjs --file examples/supabase-42501-grant-hi
 JSON output:
 
 ```bash
-npx --package github:kayalopez/ai-agent-launch-tools#v0.1.25 supabase-grants-cutover --file supabase_grants.redacted.sql --json
+npx --package github:kayalopez/ai-agent-launch-tools#v0.1.26 supabase-grants-cutover --file supabase_grants.redacted.sql --json
 ```
 
 Try the included anonymous sign-in RLS example after cloning:

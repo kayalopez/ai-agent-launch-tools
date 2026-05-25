@@ -309,6 +309,7 @@ function buildReport({ label, raw, failOn }) {
     ],
     links: {
       browserChecker: "https://ai-launch-risk-check-public.vercel.app/supabase-api-grants-readiness.html",
+      deadlineChecklist: "https://github.com/kayalopez/ai-agent-launch-tools/blob/main/checklists/supabase-data-api-grants-deadline-checklist.md",
       migrationBuilder: "https://ai-launch-risk-check-public.vercel.app/supabase-grant-migration-builder.html",
       paidReportOverview: "https://ai-launch-risk-check-public.vercel.app/supabase-launch-risk-report.html",
     },
@@ -351,6 +352,7 @@ function markdown(report) {
     "## Links",
     "",
     `- Browser checker: ${report.links.browserChecker}`,
+    `- Deadline checklist: ${report.links.deadlineChecklist}`,
     `- Grant migration builder: ${report.links.migrationBuilder}`,
     `- Paid report overview: ${report.links.paidReportOverview}`
   );
