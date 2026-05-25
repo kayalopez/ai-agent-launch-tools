@@ -248,6 +248,11 @@ function buildReport({ label, raw, failOn }) {
       "Run one Data API smoke test as anon, one as authenticated, and one with no session.",
       "Confirm RLS policies still block unintended rows after grants are added.",
     ],
+    links: {
+      browserChecker: "https://ai-launch-risk-check-public.vercel.app/supabase-api-grants-readiness.html",
+      migrationBuilder: "https://ai-launch-risk-check-public.vercel.app/supabase-grant-migration-builder.html",
+      paidReportOverview: "https://ai-launch-risk-check-public.vercel.app/supabase-launch-risk-report.html",
+    },
   };
 }
 
@@ -273,6 +278,14 @@ function markdown(report) {
   }
   lines.push("", "## Next checks", "");
   for (const check of report.nextChecks) lines.push(`- ${check}`);
+  lines.push(
+    "",
+    "## Links",
+    "",
+    `- Browser checker: ${report.links.browserChecker}`,
+    `- Grant migration builder: ${report.links.migrationBuilder}`,
+    `- Paid report overview: ${report.links.paidReportOverview}`
+  );
   lines.push(
     "",
     "## Safety boundary",

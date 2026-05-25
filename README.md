@@ -22,7 +22,7 @@ The repo also includes Supabase launch CLIs for redacted SQL/RPC/view/Security A
 
 The public browser tools also include Supabase launch checks for teams pairing AI agents with Supabase. Use them to review redacted Data API grants, explicit grant migration skeletons, anonymous sign-in RLS boundaries, Security Definer RPCs, default `EXECUTE` exposure packets, `security_invoker` view drift, exposed views, Security Advisor `search_path` warnings, auth signup trigger failures, and project-scoped Supabase MCP branching before an agent applies migrations or touches production data. The grants checker now covers the May 30, 2026 new-project Data API default and the October 30, 2026 rollout for existing projects, including default-privilege state and function `EXECUTE` evidence.
 
-For a focused paid handoff, the Supabase Launch Risk Report page explains the one-packet `$25` scope and links the free triage tools plus sample report before checkout:
+For a focused paid handoff, the Supabase Launch Risk Report page explains the one-packet `$25` scope and links the free triage tools plus sample report before checkout. It is the right next step when a free checker returns a high or medium finding and you want one 24-hour Markdown report with severity, likely failure mode, and launch smoke tests for a redacted packet:
 
 https://ai-launch-risk-check-public.vercel.app/supabase-launch-risk-report.html
 
@@ -83,6 +83,8 @@ Review redacted Supabase Data API grants and RLS policy notes for the 2026 expli
 ```bash
 npx --package github:kayalopez/ai-agent-launch-tools#v0.1.22 supabase-grants-cutover --file supabase_grants.redacted.sql --fail-on high
 ```
+
+When either Supabase CLI returns `BLOCK` or `CAUTION`, use the generated digest and redacted packet as the intake boundary. Do not send live credentials, connection strings, service-role strings, OAuth material, customer records, payment records, private screenshots, full names, private handles, or full transaction identifiers.
 
 Fail CI on high-severity migration drift:
 

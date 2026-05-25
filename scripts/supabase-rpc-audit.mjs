@@ -232,6 +232,7 @@ function buildReport({ label, raw, failOn }) {
     links: {
       browserAudit: "https://ai-launch-risk-check-public.vercel.app/supabase-security-definer-rpc-audit.html",
       sampleReport: "https://ai-launch-risk-check-public.vercel.app/sample-supabase-grants-rls-report.md",
+      paidReportOverview: "https://ai-launch-risk-check-public.vercel.app/supabase-launch-risk-report.html",
     },
   };
 }
@@ -258,6 +259,7 @@ function printMarkdown(report) {
   console.log("");
   console.log(`- Browser audit: ${report.links.browserAudit}`);
   console.log(`- Sample report: ${report.links.sampleReport}`);
+  console.log(`- Paid report overview: ${report.links.paidReportOverview}`);
   console.log("");
   console.log("## Safety");
   console.log("");
