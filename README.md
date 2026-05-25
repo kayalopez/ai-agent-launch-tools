@@ -29,6 +29,10 @@ Start with the Lovable Supabase launch preflight checklist if your immediate pro
 
 https://github.com/kayalopez/ai-agent-launch-tools/blob/main/checklists/lovable-supabase-launch-preflight-checklist.md
 
+For a public migration gate written around the exact Lovable Cloud to owned Supabase cutover:
+
+https://ai-launch-risk-check-public.vercel.app/lovable-cloud-to-supabase-migration-checklist.html
+
 Use the browser preflight to turn redacted migration or launch notes into a packet and `migration.md` cutover plan. The generated plan marks `BLOCK`, `CAUTION`, or `REVIEW`, then walks through explicit grants, clean `supabase db reset` replay, role-matrix tests, Storage upsert tests, frontend target switching, fallback, and service-role exposure follow-up:
 
 https://ai-launch-risk-check-public.vercel.app/lovable-supabase-launch-preflight.html
@@ -349,6 +353,7 @@ These no-login tools are live:
 - Supabase Launch Risk Report: https://ai-launch-risk-check-public.vercel.app/supabase-launch-risk-report.html
 - Supabase API grants readiness checker: https://ai-launch-risk-check-public.vercel.app/supabase-api-grants-readiness.html
 - Lovable Supabase launch preflight: https://ai-launch-risk-check-public.vercel.app/lovable-supabase-launch-preflight.html
+- Lovable Cloud to Supabase migration checklist: https://ai-launch-risk-check-public.vercel.app/lovable-cloud-to-supabase-migration-checklist.html
 - Generated Supabase app launch check: https://ai-launch-risk-check-public.vercel.app/supabase-generated-app-launch-check.html
 - Supabase grant migration builder: https://ai-launch-risk-check-public.vercel.app/supabase-grant-migration-builder.html
 - Supabase anonymous RLS audit matrix: https://ai-launch-risk-check-public.vercel.app/supabase-anonymous-rls-audit.html

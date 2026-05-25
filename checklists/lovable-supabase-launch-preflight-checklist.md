@@ -63,6 +63,10 @@ Use the no-login preflight page to turn the notes above into a packet:
 
 <https://ai-launch-risk-check-public.vercel.app/lovable-supabase-launch-preflight.html>
 
+For a public checklist written specifically around a Lovable Cloud to owned Supabase cutover, start here:
+
+<https://ai-launch-risk-check-public.vercel.app/lovable-cloud-to-supabase-migration-checklist.html>
+
 The generated packet includes a `migration.md` cutover plan with `BLOCK`, `CAUTION`, or `REVIEW` status. Use it to verify write-freeze timing, backend ownership, clean Supabase rebuild, explicit Data API grants, `supabase db reset` replay, role-matrix tests, Storage upsert behavior, frontend target switching, fallback, and service-role exposure follow-up.
 
 Then run the generated-app checker or grants checker:
