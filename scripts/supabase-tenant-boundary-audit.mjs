@@ -136,6 +136,10 @@ function review(raw) {
   const serviceRole = /service[_ -]?role|service role/i.test(raw);
   const securityDefiner = /security\s+definer/i.test(sql);
   const storage = /\b(?:bucket|storage|signed url|signed-url|object path|objects)\b/i.test(raw);
+  const storageUpsert = /\b(?:upsert|overwrite|replace existing|profile picture|avatar)\b/i.test(raw);
+  const missingStorageSelectUpdate = /no\s+(?:storage\s+)?select\s+(?:or|and|\/)\s+update\s+polic/i.test(raw);
+  const hasStorageSelectEvidence = /for\s+select|select\s+policy|policy[\s\S]{0,90}select/i.test(raw) && !missingStorageSelectUpdate;
+  const hasStorageUpdateEvidence = /for\s+update|update\s+policy|policy[\s\S]{0,90}update/i.test(raw) && !missingStorageSelectUpdate;
   const billingOwner = /\b(?:stripe|billing|invoice|subscription|customer|owner|admin transfer|ownership)\b/i.test(raw);
   const broadGrant = /grant\s+(?:all|select|insert|update|delete|execute)[\s\S]{0,180}\bto\s+(?:anon|authenticated|public)\b/i.test(sql);
   const truePolicy = /using\s*\(\s*true\s*\)|with\s+check\s*\(\s*true\s*\)/i.test(sql);
@@ -188,6 +192,10 @@ function review(raw) {
     add(findings, "low", "storage_policy_in_scope", "Storage policy is in scope", "Run bucket object path tests for tenant A, tenant B, no session, and signed URL generation.");
   }
 
+  if (storage && storageUpsert && (!hasStorageSelectEvidence || !hasStorageUpdateEvidence)) {
+    add(findings, "medium", "storage_upsert_policy_evidence_missing", "Storage upsert path lacks SELECT and UPDATE policy evidence", "Supabase Storage overwrite/upsert flows need object SELECT and UPDATE policy evidence in addition to INSERT. Test upload, overwrite, wrong-tenant path, and no-session behavior.");
+  }
+
   if (broadGrant) {
     add(findings, "medium", "broad_grant_requires_role_matrix", "Broad grant marker needs role-matrix review", "GRANT reachability is separate from RLS. Confirm anon, authenticated, service_role, and wrong-tenant behavior after grants are applied.");
   }
@@ -225,7 +233,7 @@ function buildReport(raw, label) {
       "Tenant A member using tenant B direct IDs: confirm reads and writes are rejected.",
       "Tenant B member using tenant A direct IDs: confirm reads and writes are rejected.",
       "Service-role endpoint: prove tenant ownership before privileged reads or writes.",
-      "Storage signed URL: prove bucket object paths mirror table tenant boundaries.",
+      "Storage signed URL and upsert: prove bucket object paths mirror table tenant boundaries, including upload, overwrite, list, download, and wrong-tenant attempts.",
     ],
     links: {
       browserPacket: "https://ai-launch-risk-check-public.vercel.app/supabase-tenant-boundary-packet.html",
