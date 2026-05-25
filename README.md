@@ -77,6 +77,10 @@ For a PostgREST `PGRST204` schema-cache error after adding a column, table, or f
 
 https://ai-launch-risk-check-public.vercel.app/supabase-postgrest-schema-cache-pgrst204.html
 
+For a Supabase RPC function ambiguity error such as `PGRST202`, `PGRST203`, or PostgreSQL `42725` after changing a function signature, dropping/recreating a function, or using overloads, build a redacted packet that separates request-shape drift, `pg_proc` signature proof, schema reload evidence, and grants/RLS review:
+
+https://ai-launch-risk-check-public.vercel.app/supabase-rpc-function-ambiguity-packet.html
+
 For a redacted generated-app launch packet covering Lovable/v0/Bolt-style migrations, RLS evidence, RPC/function `EXECUTE`, Storage upload/upsert policies, wrong-tenant tests, and backend ownership:
 
 https://ai-launch-risk-check-public.vercel.app/supabase-generated-app-launch-check.html
