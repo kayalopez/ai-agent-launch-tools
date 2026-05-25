@@ -184,6 +184,8 @@ function reviewGrants(raw) {
   const broadTableGrant = /grant\s+all[\s\S]{0,220}\bto\s+(?:anon|authenticated|public)\b|grant\s+(?:select|insert|update|delete)[\s,]+(?:select|insert|update|delete)[\s\S]{0,220}\bto\s+anon\b/i.test(sql);
   const broadExecuteGrant = /grant\s+execute[\s\S]{0,220}\bto\s+(?:anon|authenticated|public)\b/i.test(sql);
   const localResetReplay = /\b(?:supabase\s+db\s+reset|db\s+reset|local\s+dev|historical\s+migrations?|migration\s+replay|replay(?:ing)?\s+migrations?|config\.toml)\b/i.test(raw);
+  const dbPullGenerated = /\b(?:supabase\s+db\s+pull|db\s+pull|generated\s+migration|schema\s+sync)\b/i.test(raw);
+  const dataApiRevokeStatements = sql.match(/\brevoke\s+(?:select|insert|update|delete|all)[\s\S]{0,260}?\bfrom\s+"?(?:anon|authenticated|public)"?/gi) || [];
   const defaultTablesRevoked = /alter\s+default\s+privileges[\s\S]{0,320}revoke[\s\S]{0,160}(?:select|insert|update|delete)[\s\S]{0,160}on\s+tables/i.test(sql);
   const defaultFunctionsRevoked = /alter\s+default\s+privileges[\s\S]{0,320}revoke[\s\S]{0,120}execute[\s\S]{0,160}on\s+functions/i.test(sql);
   const defaultSequencesRevoked = /alter\s+default\s+privileges[\s\S]{0,320}revoke[\s\S]{0,160}(?:usage|select)[\s\S]{0,160}on\s+sequences/i.test(sql);
@@ -223,6 +225,14 @@ function reviewGrants(raw) {
 
   if (localResetReplay && hasPublicTable && (!hasTableGrant || broadTableGrant)) {
     add(findings, "medium", "db_reset_replay_grants_missing", "Local db reset replay can rebuild tables without reviewed narrow grants", "If historical migrations create public-schema tables, a fresh supabase db reset should replay explicit narrow grants in migrations instead of depending on dashboard defaults, manual fixes, or broad make-it-work grants.");
+  }
+
+  if (dbPullGenerated && dataApiRevokeStatements.length && !hasGrant) {
+    add(findings, "high", "db_pull_revoke_without_regrant", "db pull generated revoke block has no matching re-grant evidence", `Found ${dataApiRevokeStatements.length} Data API role revoke statement(s) without an explicit re-grant in the redacted packet. Review whether db pull captured hardening drift that now needs a narrow grant patch.`);
+  }
+
+  if (dbPullGenerated && localResetReplay && dataApiRevokeStatements.length && permissionDenied) {
+    add(findings, "high", "db_pull_revoke_reset_replay", "db pull revoke block can replay 42501 after db reset", "The packet mentions db pull, db reset, permission-denied behavior, and generated Data API role revokes. Add reviewed narrow grants to migration history, then rerun a disposable reset and role matrix.");
   }
 
   if (defaultSequencesRevoked) {

@@ -21,7 +21,7 @@ Create one redacted text packet with:
 - The `CREATE TABLE`, `ALTER TABLE`, `GRANT`, `REVOKE`, and `CREATE POLICY` statements for the affected tables.
 - Any `ALTER DEFAULT PRIVILEGES` statements for tables, functions, and sequences in `public`.
 - Any `42501` PostgREST error hint, with project refs, emails, tokens, and IDs removed.
-- Any `supabase db reset` or local replay note showing whether historical migrations include the new explicit grants.
+- Any `supabase db pull` generated `REVOKE` block, `supabase db reset`, or local replay note showing whether historical migrations include the new explicit grants.
 - The app path that should reach each object: no session, `anon`, authenticated user, service-side code, or admin-only path.
 - One expected-pass and one expected-deny smoke test per role.
 - Function/RPC `EXECUTE` grants, especially for functions created by AI tools or migration generators.
@@ -45,14 +45,15 @@ Create one redacted text packet with:
 Run the dependency-free local checker on a redacted packet:
 
 ```bash
-npx --package github:kayalopez/ai-agent-launch-tools#v0.1.28 supabase-grants-cutover --file supabase_grants.redacted.sql --fail-on high
+npx --package github:kayalopez/ai-agent-launch-tools#v0.1.29 supabase-grants-cutover --file supabase_grants.redacted.sql --fail-on high
 ```
 
-The CLI does not connect to Supabase. It only reads local redacted text and flags missing grants, local `db reset` replay gaps, broad grants, default-privilege state, function `EXECUTE` evidence, disabled RLS, permissive policies, anonymous-session boundaries, and `42501` grant hints.
+The CLI does not connect to Supabase. It only reads local redacted text and flags missing grants, local `db reset` replay gaps, `db pull` generated `REVOKE` replay risk, broad grants, default-privilege state, function `EXECUTE` evidence, disabled RLS, permissive policies, anonymous-session boundaries, and `42501` grant hints.
 
 ## Browser Tools
 
 - Free grants checker: <https://ai-launch-risk-check-public.vercel.app/supabase-api-grants-readiness.html>
+- db pull REVOKE replay checker: <https://ai-launch-risk-check-public.vercel.app/supabase-db-pull-revoke-replay.html>
 - Grant migration builder: <https://ai-launch-risk-check-public.vercel.app/supabase-grant-migration-builder.html>
 - Sample Supabase report: <https://ai-launch-risk-check-public.vercel.app/sample-supabase-grants-rls-report.md>
 - Fixed-scope report overview: <https://ai-launch-risk-check-public.vercel.app/supabase-launch-risk-report.html>
