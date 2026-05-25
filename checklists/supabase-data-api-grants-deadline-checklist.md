@@ -45,7 +45,7 @@ Create one redacted text packet with:
 Run the dependency-free local checker on a redacted packet:
 
 ```bash
-npx --package github:kayalopez/ai-agent-launch-tools#v0.1.27 supabase-grants-cutover --file supabase_grants.redacted.sql --fail-on high
+npx --package github:kayalopez/ai-agent-launch-tools#v0.1.28 supabase-grants-cutover --file supabase_grants.redacted.sql --fail-on high
 ```
 
 The CLI does not connect to Supabase. It only reads local redacted text and flags missing grants, local `db reset` replay gaps, broad grants, default-privilege state, function `EXECUTE` evidence, disabled RLS, permissive policies, anonymous-session boundaries, and `42501` grant hints.

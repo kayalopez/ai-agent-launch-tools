@@ -221,8 +221,8 @@ function reviewGrants(raw) {
     add(findings, "low", "default_table_privileges_revoked", "Default table privilege revoke evidence is present", "Keep explicit grants for intended Data API tables in the same migration or packet.");
   }
 
-  if (localResetReplay && hasPublicTable && !hasTableGrant) {
-    add(findings, "medium", "db_reset_replay_grants_missing", "Local db reset replay can rebuild tables without Data API grants", "If historical migrations create public-schema tables, a fresh supabase db reset should replay explicit grants in migrations instead of depending on dashboard defaults or manual fixes.");
+  if (localResetReplay && hasPublicTable && (!hasTableGrant || broadTableGrant)) {
+    add(findings, "medium", "db_reset_replay_grants_missing", "Local db reset replay can rebuild tables without reviewed narrow grants", "If historical migrations create public-schema tables, a fresh supabase db reset should replay explicit narrow grants in migrations instead of depending on dashboard defaults, manual fixes, or broad make-it-work grants.");
   }
 
   if (defaultSequencesRevoked) {
