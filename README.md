@@ -20,7 +20,7 @@ It now includes a small config reviewer and `tools/list` importer. The config re
 
 The repo also includes Supabase launch CLIs for redacted SQL/RPC/view/Security Advisor notes. `supabase-rpc-audit` checks local text only and flags public-schema definer functions, public views missing `security_invoker`, broad `EXECUTE` or `SELECT` grants, default-`EXECUTE` revoke mismatches, callable-RPC ACL or REST smoke-test evidence, missing `search_path` hardening, `Function Search Path Mutable` review packets, SQL-function inlining tradeoffs, `SET search_path FROM CURRENT` evidence needs, and privileged functions or views that can bypass caller RLS expectations. `supabase-grants-cutover` reviews redacted Data API grants and policy packets for the 2026 explicit-grants default, including missing table grants, default privilege state, broad grant quick fixes, function `EXECUTE` evidence, disabled RLS, permissive policies, anonymous sign-in boundaries, and `auth.uid()` null behavior. Use `--fail-on high` in CI to block generated migrations that drop launch-blocking grants, views, or RPC safety markers.
 
-The public browser tools also include Supabase launch checks for teams pairing AI agents with Supabase. Use them to review redacted Data API grants, anonymous sign-in RLS boundaries, Security Definer RPCs, default `EXECUTE` exposure packets, `security_invoker` view drift, exposed views, Security Advisor `search_path` warnings, auth signup trigger failures, and project-scoped Supabase MCP branching before an agent applies migrations or touches production data. The grants checker now covers the May 30, 2026 new-project Data API default and the October 30, 2026 rollout for existing projects, including default-privilege state and function `EXECUTE` evidence.
+The public browser tools also include Supabase launch checks for teams pairing AI agents with Supabase. Use them to review redacted Data API grants, explicit grant migration skeletons, anonymous sign-in RLS boundaries, Security Definer RPCs, default `EXECUTE` exposure packets, `security_invoker` view drift, exposed views, Security Advisor `search_path` warnings, auth signup trigger failures, and project-scoped Supabase MCP branching before an agent applies migrations or touches production data. The grants checker now covers the May 30, 2026 new-project Data API default and the October 30, 2026 rollout for existing projects, including default-privilege state and function `EXECUTE` evidence.
 
 For a focused paid handoff, the Supabase Launch Risk Report page explains the one-packet `$25` scope and links the free triage tools plus sample report before checkout:
 
@@ -33,6 +33,10 @@ https://ai-launch-risk-check-public.vercel.app/supabase-rpc-exposure-packet-buil
 For the 2026 Supabase Data API grants cutover:
 
 https://ai-launch-risk-check-public.vercel.app/supabase-api-grants-readiness.html
+
+For a redacted explicit-grants migration skeleton and role-matrix test packet:
+
+https://ai-launch-risk-check-public.vercel.app/supabase-grant-migration-builder.html
 
 Need the full launch workflow? The $25 AI Agent Launch Pack includes the local app, safe-intake builder, checklist, templates, sample report, and optional fixed-scope 24-hour review path:
 
@@ -263,6 +267,7 @@ These no-login tools are live:
 - Agent API key bootstrap checklist: https://ai-launch-risk-check-public.vercel.app/agent-api-key-bootstrap-checklist.html
 - Supabase Launch Risk Report: https://ai-launch-risk-check-public.vercel.app/supabase-launch-risk-report.html
 - Supabase API grants readiness checker: https://ai-launch-risk-check-public.vercel.app/supabase-api-grants-readiness.html
+- Supabase grant migration builder: https://ai-launch-risk-check-public.vercel.app/supabase-grant-migration-builder.html
 - Supabase anonymous RLS audit matrix: https://ai-launch-risk-check-public.vercel.app/supabase-anonymous-rls-audit.html
 - Supabase Security Definer RPC audit: https://ai-launch-risk-check-public.vercel.app/supabase-security-definer-rpc-audit.html
 - Supabase RPC exposure packet builder: https://ai-launch-risk-check-public.vercel.app/supabase-rpc-exposure-packet-builder.html
