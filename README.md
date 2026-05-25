@@ -1,5 +1,6 @@
 # AI Agent Launch Tools
 
+[![SafeSkill 93/100](https://img.shields.io/badge/SafeSkill-93%2F100_Verified%20Safe-brightgreen)](https://safeskill.dev/scan/kayalopez-ai-agent-launch-tools)
 Small, dependency-free checks for builders launching AI agents, MCP servers, and tool-using workflows.
 
 The first tool is a public launch-surface scanner for sites you own or have permission to test. It checks basic launch hygiene signals before you ship:
