@@ -24,11 +24,11 @@ The repo also includes Supabase launch CLIs for redacted SQL/RPC/view/Security A
 
 The public browser tools also include Supabase launch checks for teams pairing AI agents with Supabase. Use them to review redacted Lovable/v0/Bolt-style generated app packets, Data API grants, explicit grant migration skeletons, multi-tenant RLS boundary packets, anonymous sign-in RLS boundaries, Security Definer RPCs, default `EXECUTE` exposure packets, `security_invoker` view drift, exposed views, Security Advisor `search_path` warnings, auth signup trigger failures, and project-scoped Supabase MCP branching before an agent applies migrations or touches production data. The grants checker now covers the May 30, 2026 new-project Data API default and the October 30, 2026 rollout for existing projects, including default-privilege state and function `EXECUTE` evidence.
 
-Start with the Lovable Supabase launch preflight checklist if your immediate problem is a generated app where RLS, Storage upserts, backend ownership, or generated migrations are unclear before launch:
+Start with the Lovable Supabase launch preflight checklist if your immediate problem is a Lovable Cloud migration or generated app where auth transfer, RLS, Storage upserts, backend ownership, frontend target switching, or generated migrations are unclear before launch:
 
 https://github.com/kayalopez/ai-agent-launch-tools/blob/main/checklists/lovable-supabase-launch-preflight-checklist.md
 
-Use the browser preflight to turn redacted notes into a packet:
+Use the browser preflight to turn redacted migration or launch notes into a packet:
 
 https://ai-launch-risk-check-public.vercel.app/lovable-supabase-launch-preflight.html
 
