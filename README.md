@@ -32,6 +32,10 @@ Use the browser preflight to turn redacted migration or launch notes into a pack
 
 https://ai-launch-risk-check-public.vercel.app/lovable-supabase-launch-preflight.html
 
+If the concern is that a Lovable-generated app, chat, env name, or frontend bundle may have exposed a Supabase service-role or secret key, start with the local service-role exposure check and keep raw values out of the packet:
+
+https://ai-launch-risk-check-public.vercel.app/lovable-service-role-exposure-check.html
+
 If that packet needs a 24-hour second pass, the fixed-scope Lovable Cloud migration report page explains the one-packet `$25` scope before checkout:
 
 https://ai-launch-risk-check-public.vercel.app/lovable-cloud-migration-risk-report.html
