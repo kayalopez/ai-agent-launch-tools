@@ -118,6 +118,59 @@ function shouldFail(findings, failOn) {
   return findings.some((finding) => SEVERITY_RANK[finding.severity] >= threshold);
 }
 
+function normalizeWhitespace(value) {
+  return String(value).replace(/\s+/g, " ").trim();
+}
+
+function parseGrantHints(raw) {
+  const hints = [];
+  const seen = new Set();
+  const grantPattern = /\bGRANT\s+([A-Z,\s]+?)\s+ON\s+(?:(TABLE|SEQUENCE|FUNCTION)\s+)?([a-z_][\w$]*(?:\.[a-z_][\w$]*)?(?:\([^;\n]*?\))?)\s+TO\s+(anon|authenticated|service_role|public)\s*;?/gi;
+  const candidateText = raw
+    .split(/\r?\n/)
+    .filter((line) => /hint|grant\s+the\s+required\s+privileges|postgrest/i.test(line))
+    .join("\n");
+  if (!candidateText.trim()) return hints;
+  let match;
+  while ((match = grantPattern.exec(candidateText)) !== null) {
+    const privileges = normalizeWhitespace(match[1].toLowerCase()).replace(/\s*,\s*/g, ", ");
+    const objectType = (match[2] || inferObjectType(privileges)).toLowerCase();
+    const objectName = normalizeWhitespace(match[3]);
+    const role = match[4].toLowerCase();
+    const statement = `grant ${privileges} on ${objectType} ${objectName} to ${role};`;
+    const key = statement.toLowerCase();
+    if (!seen.has(key)) {
+      seen.add(key);
+      hints.push({ privileges, objectType, objectName, role, statement });
+    }
+  }
+  return hints;
+}
+
+function inferObjectType(privileges) {
+  if (/\bexecute\b/i.test(privileges)) return "function";
+  if (/\busage\b/i.test(privileges)) return "sequence";
+  return "table";
+}
+
+function buildGrantReviewPacket(grantHints) {
+  if (!grantHints.length) return [];
+  return grantHints.map((hint) => {
+    const objectLabel = `${hint.objectType} ${hint.objectName}`;
+    const positive = hint.role === "anon"
+      ? `Confirm an anon-role Data API call can reach only the intended ${objectLabel} behavior.`
+      : `Confirm a ${hint.role} Data API call can reach only the intended ${objectLabel} behavior.`;
+    return {
+      statement: hint.statement,
+      tests: [
+        positive,
+        `Confirm the same ${objectLabel} action fails for every role that is not explicitly intended to use it.`,
+        "Confirm RLS still denies wrong-owner, wrong-tenant, and no-session rows after the grant is applied.",
+      ],
+    };
+  });
+}
+
 function reviewGrants(raw) {
   validateRedacted(raw);
   const findings = [];
@@ -140,6 +193,7 @@ function reviewGrants(raw) {
   const usingTrue = /using\s*\(\s*true\s*\)|with\s+check\s*\(\s*true\s*\)/i.test(sql);
   const policyStatements = extractPolicyStatements(sql);
   const serviceRole = /service_role|bypassrls|bypass\s+rls/i.test(sql);
+  const grantHints = parseGrantHints(raw);
 
   if (!text) {
     add(findings, "medium", "no_redacted_input", "No redacted SQL or Data API error text provided", "Paste a redacted migration, grant snippet, policy excerpt, or 42501 error note to classify the cutover risk.");
@@ -148,6 +202,8 @@ function reviewGrants(raw) {
 
   if (permissionDenied && !hasGrant) {
     add(findings, "high", "grant_missing_for_data_api", "Permission-denied error has no matching grant evidence", "This looks like a Data API grant problem. Add the narrow role privilege needed before changing RLS policy logic.");
+  } else if (permissionDenied && grantHints.length) {
+    add(findings, "medium", "postgrest_grant_hint_extracted", "PostgREST grant hint was extracted", "Treat the hinted grant as a migration candidate, not a blind fix. Apply it narrowly, then run the role-matrix tests below.");
   } else if (permissionDenied && postgrestHint) {
     add(findings, "medium", "postgrest_grant_hint_present", "PostgREST grant hint is present", "Keep the exact hinted grant in the review packet, then confirm the matching RLS policy still blocks unintended rows.");
   }
@@ -225,6 +281,7 @@ function summarize(findings) {
 
 function buildReport({ label, raw, failOn }) {
   const findings = reviewGrants(raw);
+  const grantHints = parseGrantHints(raw);
   const failOnMatched = shouldFail(findings, failOn);
   return {
     ok: true,
@@ -241,6 +298,8 @@ function buildReport({ label, raw, failOn }) {
       wouldFail: failOnMatched,
     },
     findings,
+    grantHints,
+    grantReviewPacket: buildGrantReviewPacket(grantHints),
     nextChecks: [
       "Record whether default table, function, and sequence privileges are revoked for future public-schema objects.",
       "For every browser-facing table, record the exact anon/authenticated/service_role grants needed.",
@@ -275,6 +334,15 @@ function markdown(report) {
   for (const finding of report.findings) {
     lines.push(`- ${finding.severity.toUpperCase()} ${finding.code}: ${finding.title}`);
     lines.push(`  - ${finding.detail}`);
+  }
+  if (report.grantReviewPacket.length) {
+    lines.push("", "## Extracted PostgREST grant hints", "");
+    for (const packet of report.grantReviewPacket) {
+      lines.push(`- \`${packet.statement}\``);
+      for (const test of packet.tests) {
+        lines.push(`  - ${test}`);
+      }
+    }
   }
   lines.push("", "## Next checks", "");
   for (const check of report.nextChecks) lines.push(`- ${check}`);
