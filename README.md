@@ -16,6 +16,7 @@ The repo also includes practical MCP/tool-call launch checklists:
 - [MCP mutation replay guard checklist](checklists/mcp-mutation-replay-guard-checklist.md)
 - [MCP trust verification checklist](checklists/mcp-trust-verification-checklist.md)
 - [Lovable Supabase launch preflight checklist](checklists/lovable-supabase-launch-preflight-checklist.md)
+- [Lovable / Supabase service-role exposure cleanup checklist](checklists/lovable-service-role-exposure-cleanup-checklist.md)
 - [Supabase Data API grants deadline checklist](checklists/supabase-data-api-grants-deadline-checklist.md)
 
 It now includes a small config reviewer and `tools/list` importer. The config reviewer turns a redacted Claude Desktop-style MCP config into a pre-install BLOCK / CAUTION / REVIEW report. The importer turns MCP tool metadata into an allow / ask / deny permission matrix with a snapshot digest for re-reviewing changed tools, without invoking any tools. It also recursively scans tool names, descriptions, and every string inside `inputSchema` for metadata/schema injection signals, including nested parameter descriptions, enum values, defaults, and titles. It flags schema-quality drift such as missing or empty `inputSchema`, object schemas without properties, missing `required` arrays, undocumented parameters, boolean/null/array property-schema entries, union `type` arrays that need target-client regression coverage, and JSON Schema `$ref` entries that some MCP clients or LLM tool adapters may not dereference before argument generation. It now also flags missing or incomplete `outputSchema` metadata for tools that appear to return structured data, so teams can review whether `structuredContent` can be validated and rendered reliably. It also flags missing or incomplete MCP `annotations` hints that clients can use for read-only, destructive, idempotent, and open-world approval prompts. It can also print a Codex `config.toml` review snippet that keeps sandbox settings separate from MCP tool approval.
@@ -35,6 +36,10 @@ https://ai-launch-risk-check-public.vercel.app/lovable-supabase-launch-preflight
 If the concern is that a Lovable-generated app, chat, env name, or frontend bundle may have exposed a Supabase service-role or secret key, start with the local service-role exposure check and keep raw values out of the packet:
 
 https://ai-launch-risk-check-public.vercel.app/lovable-service-role-exposure-check.html
+
+The companion cleanup checklist is here:
+
+https://github.com/kayalopez/ai-agent-launch-tools/blob/main/checklists/lovable-service-role-exposure-cleanup-checklist.md
 
 If that packet needs a 24-hour second pass, the fixed-scope Lovable Cloud migration report page explains the one-packet `$25` scope before checkout:
 
