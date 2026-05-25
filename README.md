@@ -81,6 +81,10 @@ For a Supabase RPC function ambiguity error such as `PGRST202`, `PGRST203`, or P
 
 https://ai-launch-risk-check-public.vercel.app/supabase-rpc-function-ambiguity-packet.html
 
+For a stale Supabase REST response where direct SQL/RLS says rows are deleted or denied but one exact REST URL still returns them, build a redacted packet that separates database truth, URL-key behavior, response headers, client/server cache path, and schema-cache reload evidence:
+
+https://ai-launch-risk-check-public.vercel.app/supabase-rest-stale-response-packet.html
+
 For a redacted generated-app launch packet covering Lovable/v0/Bolt-style migrations, RLS evidence, RPC/function `EXECUTE`, Storage upload/upsert policies, wrong-tenant tests, and backend ownership:
 
 https://ai-launch-risk-check-public.vercel.app/supabase-generated-app-launch-check.html
@@ -382,6 +386,7 @@ These no-login tools are live:
 - Supabase anonymous RLS audit matrix: https://ai-launch-risk-check-public.vercel.app/supabase-anonymous-rls-audit.html
 - Supabase Security Definer RPC audit: https://ai-launch-risk-check-public.vercel.app/supabase-security-definer-rpc-audit.html
 - Supabase RPC exposure packet builder: https://ai-launch-risk-check-public.vercel.app/supabase-rpc-exposure-packet-builder.html
+- Supabase REST stale response packet: https://ai-launch-risk-check-public.vercel.app/supabase-rest-stale-response-packet.html
 - Supabase MCP branching readiness checker: https://ai-launch-risk-check-public.vercel.app/supabase-mcp-branching-readiness.html
 - Supabase Security Advisor fix planner: https://ai-launch-risk-check-public.vercel.app/supabase-security-advisor-fix-planner.html
 - Supabase signup trigger debugger: https://ai-launch-risk-check-public.vercel.app/supabase-signup-trigger-debugger.html
