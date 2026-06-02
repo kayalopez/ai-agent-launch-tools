@@ -731,6 +731,36 @@ function classify(normalized) {
     };
   }
 
+  // Annotation pre-pass: when the server declares the action shape via
+  // MCP standard annotations, trust that declaration over keyword
+  // matching against tool descriptions. The injection and schema-review
+  // checks above are orthogonal (they assess metadata quality, not
+  // action shape) and still fire; this layer specifically replaces the
+  // substring-based action classification because the server's own
+  // declaration is strictly stronger evidence than substring matches.
+  const ann = normalized.annotations;
+  if (ann.destructiveHint === true) {
+    return {
+      actionClass: "destructive_write",
+      gate: "ask",
+      reason: "Server declared destructiveHint=true. Destructive or hard-to-reverse state change.",
+    };
+  }
+  if (ann.readOnlyHint === true) {
+    // openWorldHint=true means the read may touch systems beyond the
+    // local server's bounded context (e.g. a public web fetch). Route
+    // those to read_public/allow. Default (false or unset) is the
+    // safer read_private/ask classification.
+    const isPublic = ann.openWorldHint === true;
+    return {
+      actionClass: isPublic ? "read_public" : "read_private",
+      gate: isPublic ? "allow" : "ask",
+      reason: isPublic
+        ? "Server declared readOnlyHint=true with openWorldHint=true. Read-only action with no obvious private-data or mutation signal."
+        : "Server declared readOnlyHint=true. May read private business context or tenant data.",
+    };
+  }
+
   for (const rule of RULES) {
     if (rule.patterns.some((pattern) => normalized.searchable.includes(pattern))) {
       return {
